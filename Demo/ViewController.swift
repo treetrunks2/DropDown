@@ -125,7 +125,7 @@ class ViewController: UIViewController {
 			/*** FOR CUSTOM CELLS ***/
 			$0.cellNib = UINib(nibName: "MyCell", bundle: nil)
 			
-			$0.customCellConfiguration = { (index: Index, item: String, cell: DropDownCell) -> Void in
+			$0.customCellConfiguration = { (index: Index, item: Any, cell: DropDownCell) -> Void in
 				guard let cell = cell as? MyCell else { return }
 				
 				// Setup your custom UI components
@@ -179,7 +179,7 @@ class ViewController: UIViewController {
 		
 		// Action triggered on selection
 		chooseArticleDropDown.selectionAction = { [weak self] (index, item) in
-			self?.chooseArticleButton.setTitle(item, for: .normal)
+            self?.chooseArticleButton.setTitle(item as? String, for: .normal)
 		}
         
         chooseArticleDropDown.multiSelectionAction = { [weak self] (indices, items) in
@@ -187,6 +187,10 @@ class ViewController: UIViewController {
             if items.isEmpty {
                 self?.chooseArticleButton.setTitle("", for: .normal)
             }
+        }
+        
+        chooseArticleDropDown.extractLabelText = { (item: Any) -> String in
+            return (item as? String) ?? ""
         }
 		
 		// Action triggered on dropdown cancelation (hide)
@@ -209,25 +213,37 @@ class ViewController: UIViewController {
 		amountDropDown.bottomOffset = CGPoint(x: 0, y: amountButton.bounds.height)
 		
 		// You can also use localizationKeysDataSource instead. Check the docs.
-		amountDropDown.dataSource = [
-			"10 €",
-			"20 €",
-			"30 €",
-			"40 €",
-			"50 €",
-			"60 €",
-			"70 €",
-			"80 €",
-			"90 €",
-			"100 €",
-			"110 €",
-			"120 €"
-		]
+        
+        amountDropDown.dataSource = [
+            CompanyInfo(name: "회사1", code: "CODE1"),
+            CompanyInfo(name: "회사2", code: "CODE2"),
+            CompanyInfo(name: "회사3", code: "CODE3"),
+            CompanyInfo(name: "회사4", code: "CODE4"),
+            CompanyInfo(name: "회사5", code: "CODE5"),
+            CompanyInfo(name: "회사5", code: "CODE5"),
+            CompanyInfo(name: "회사5", code: "CODE5"),
+            CompanyInfo(name: "회사5", code: "CODE5"),
+            CompanyInfo(name: "회사5", code: "CODE5"),
+            CompanyInfo(name: "회사5", code: "CODE5"),
+            CompanyInfo(name: "회사5", code: "CODE5"),
+            CompanyInfo(name: "회사5", code: "CODE5")
+        ]
 		
 		// Action triggered on selection
 		amountDropDown.selectionAction = { [weak self] (index, item) in
-			self?.amountButton.setTitle(item, for: .normal)
+            if let info = item as? CompanyInfo {
+                self?.amountButton.setTitle(info.name, for: .normal)
+                print("selected code: \(info.code)")
+            }
 		}
+        
+        amountDropDown.extractLabelText = { (item: Any) -> String in
+            let info  = item as? CompanyInfo
+            
+            return info?.name ?? ""
+        }
+        
+        
 	}
 	
 	func setupChooseDropDown() {
@@ -247,8 +263,12 @@ class ViewController: UIViewController {
 		
 		// Action triggered on selection
 		chooseDropDown.selectionAction = { [weak self] (index, item) in
-			self?.chooseButton.setTitle(item, for: .normal)
+            self?.chooseButton.setTitle(item as? String, for: .normal)
 		}
+        
+        chooseDropDown.extractLabelText = { (item: Any) -> String in
+            return (item as? String) ?? ""
+        }
 	}
 	
 	func setupCenteredDropDown() {
@@ -265,7 +285,11 @@ class ViewController: UIViewController {
 		]
         
         centeredDropDown.selectionAction = { [weak self] (index, item) in
-            self?.centeredDropDownButton.setTitle(item, for: .normal)
+            self?.centeredDropDownButton.setTitle(item as? String, for: .normal)
+        }
+        
+        centeredDropDown.extractLabelText = { (item: Any) -> String in
+            return (item as? String) ?? ""
         }
 	}
 	
@@ -279,5 +303,9 @@ class ViewController: UIViewController {
 			"Menu 3",
 			"Menu 4"
 		]
+        
+        rightBarDropDown.extractLabelText = { (item: Any) -> String in
+            return (item as? String) ?? ""
+        }
 	}
 }

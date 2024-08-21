@@ -3,6 +3,7 @@
 //  DropDown
 //
 //  Created by Kevin Hirsch on 28/07/15.
+//  Modified by 이민정1 on 8/21/24.
 //  Copyright (c) 2015 Kevin Hirsch. All rights reserved.
 //
 
@@ -12,15 +13,16 @@ import UIKit
 
 public typealias Index = Int
 public typealias Closure = () -> Void
-public typealias SelectionClosure = (Index, String) -> Void
-public typealias MultiSelectionClosure = ([Index], [String]) -> Void
-public typealias ConfigurationClosure = (Index, String) -> String
-public typealias CellConfigurationClosure = (Index, String, DropDownCell) -> Void
+public typealias SelectionClosure = (Index, Any) -> Void
+public typealias MultiSelectionClosure = ([Index], [Any]) -> Void
+public typealias ConfigurationClosure = (Index, Any) -> String
+public typealias CellConfigurationClosure = (Index, Any, DropDownCell) -> Void
 private typealias ComputeLayoutTuple = (x: CGFloat, y: CGFloat, width: CGFloat, offscreenHeight: CGFloat)
+public typealias ExtractLabelTextClosure = (Any) -> String
 
 /// Can be `UIView` or `UIBarButtonItem`.
 @objc
-public protocol AnchorView: class {
+public protocol AnchorView: AnyObject {
 
 	var plainView: UIView { get }
 
@@ -381,7 +383,7 @@ public final class DropDown: UIView {
 
 	Changing the data source automatically reloads the drop down.
 	*/
-	public var dataSource = [String]() {
+	public var dataSource = [Any]() {
 		didSet {
             deselectRows(at: selectedRowIndices)
 			reloadAllComponents()
@@ -438,6 +440,9 @@ public final class DropDown: UIView {
 
 	/// The action to execute when the user cancels/hides the drop down.
 	public var cancelAction: Closure?
+    
+    /// extract text from selected item object
+    public var extractLabelText: ExtractLabelTextClosure?
 
 	/// The dismiss mode of the drop down. Default is `OnTap`.
 	public var dismissMode = DismissMode.onTap {
@@ -460,7 +465,6 @@ public final class DropDown: UIView {
 	//MARK: - Init's
 
 	deinit {
-		stopListeningToNotifications()
 	}
 
 	/**
@@ -486,7 +490,7 @@ public final class DropDown: UIView {
 
 	- returns: A new instance of a drop down customized with the above parameters.
 	*/
-	public convenience init(anchorView: AnchorView, selectionAction: SelectionClosure? = nil, dataSource: [String] = [], topOffset: CGPoint? = nil, bottomOffset: CGPoint? = nil, cellConfiguration: ConfigurationClosure? = nil, cancelAction: Closure? = nil) {
+    public convenience init(anchorView: AnchorView, selectionAction: SelectionClosure? = nil, dataSource: [String] = [], topOffset: CGPoint? = nil, bottomOffset: CGPoint? = nil, cellConfiguration: ConfigurationClosure? = nil, cancelAction: Closure? = nil, extractLabelText: ExtractLabelTextClosure? = nil) {
 		self.init(frame: .zero)
 
 		self.anchorView = anchorView
@@ -496,6 +500,7 @@ public final class DropDown: UIView {
 		self.bottomOffset = bottomOffset ?? .zero
 		self.cellConfiguration = cellConfiguration
 		self.cancelAction = cancelAction
+        self.extractLabelText = extractLabelText
 	}
 
 	override public init(frame: CGRect) {
@@ -531,8 +536,6 @@ private extension DropDown {
 
 		tableView.delegate = self
 		tableView.dataSource = self
-		
-		startListeningToKeyboard()
 
 		accessibilityIdentifier = "drop_down"
 	}
@@ -728,14 +731,7 @@ extension DropDown {
 		let maxY = y + tableHeight
 		let windowMaxY = window.bounds.maxY - DPDConstant.UI.HeightPadding - offsetFromWindowBottom
 		
-		let keyboardListener = KeyboardListener.sharedInstance
-		let keyboardMinY = keyboardListener.keyboardFrame.minY - DPDConstant.UI.HeightPadding
-		
-		if keyboardListener.isVisible && maxY > keyboardMinY {
-			offscreenHeight = abs(maxY - keyboardMinY)
-		} else if maxY > windowMaxY {
-			offscreenHeight = abs(maxY - windowMaxY)
-		}
+        offscreenHeight = abs(maxY - windowMaxY)
 		
 		return (x, y, width, offscreenHeight)
 	}
@@ -1022,7 +1018,7 @@ extension DropDown {
 	}
 
 	/// Returns the selected item.
-	public var selectedItem: String? {
+	public var selectedItem: Any? {
 		guard let row = (tableView.indexPathForSelectedRow as NSIndexPath?)?.row else { return nil }
 
 		return dataSource[row]
@@ -1082,7 +1078,11 @@ extension DropDown: UITableViewDataSource, UITableViewDelegate {
 		if let cellConfiguration = cellConfiguration {
 			cell.optionLabel.text = cellConfiguration(index, dataSource[index])
 		} else {
-			cell.optionLabel.text = dataSource[index]
+            if let extractLabelText = extractLabelText {
+                cell.optionLabel.text = extractLabelText(dataSource[index])
+            } else {
+                print("please set 'extractLabelTextClosure")
+            }
 		}
 		
 		customCellConfiguration?(index, dataSource[index], cell)
@@ -1154,44 +1154,6 @@ extension DropDown {
 	@objc
 	fileprivate func dismissableViewTapped() {
 		cancel()
-	}
-
-}
-
-//MARK: - Keyboard events
-
-extension DropDown {
-
-	/**
-	Starts listening to keyboard events.
-	Allows the drop down to display correctly when keyboard is showed.
-	*/
-	@objc public static func startListeningToKeyboard() {
-		KeyboardListener.sharedInstance.startListeningToKeyboard()
-	}
-
-	fileprivate func startListeningToKeyboard() {
-		KeyboardListener.sharedInstance.startListeningToKeyboard()
-
-		NotificationCenter.default.addObserver(
-			self,
-			selector: #selector(keyboardUpdate),
-			name: UIResponder.keyboardWillShowNotification,
-			object: nil)
-		NotificationCenter.default.addObserver(
-			self,
-			selector: #selector(keyboardUpdate),
-			name: UIResponder.keyboardWillHideNotification,
-			object: nil)
-	}
-
-	fileprivate func stopListeningToNotifications() {
-		NotificationCenter.default.removeObserver(self)
-	}
-
-	@objc
-	fileprivate func keyboardUpdate() {
-		self.setNeedsUpdateConstraints()
 	}
 
 }
