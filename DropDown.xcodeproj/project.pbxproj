@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		091186F62C75833300DD025E /* CompanyInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 091186F52C75833300DD025E /* CompanyInfo.swift */; };
+		091186F72C75833300DD025E /* CompanyInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 091186F52C75833300DD025E /* CompanyInfo.swift */; };
+		091186F82C75833300DD025E /* CompanyInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 091186F52C75833300DD025E /* CompanyInfo.swift */; };
 		0A76442B1B676C2300BF1A2D /* DropDownTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A76442A1B676C2300BF1A2D /* DropDownTests.swift */; };
 		0A8518D51D6480190089529A /* MyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8518D41D6480190089529A /* MyCell.swift */; };
 		0A8518D71D6481E30089529A /* MyCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0A8518D61D6481E30089529A /* MyCell.xib */; };
@@ -59,6 +62,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		091186F52C75833300DD025E /* CompanyInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanyInfo.swift; sourceTree = "<group>"; };
 		0A76440F1B676C2300BF1A2D /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A7644241B676C2300BF1A2D /* DropDownTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DropDownTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A7644291B676C2300BF1A2D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -140,6 +144,7 @@
 				0AB5D89F1D0EF173002D3A17 /* Main.storyboard */,
 				0AB5D8961D0EF15D002D3A17 /* NiceButton.swift */,
 				0A7644121B676C2300BF1A2D /* Supporting Files */,
+				091186F52C75833300DD025E /* CompanyInfo.swift */,
 			);
 			path = Demo;
 			sourceTree = "<group>";
@@ -357,6 +362,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0AB5D89A1D0EF15D002D3A17 /* ViewController.swift in Sources */,
+				091186F62C75833300DD025E /* CompanyInfo.swift in Sources */,
 				0A8518D51D6480190089529A /* MyCell.swift in Sources */,
 				0AB5D8991D0EF15D002D3A17 /* NiceButton.swift in Sources */,
 				0AB5D8981D0EF15D002D3A17 /* AppDelegate.swift in Sources */,
@@ -367,6 +373,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				091186F72C75833300DD025E /* CompanyInfo.swift in Sources */,
 				0A76442B1B676C2300BF1A2D /* DropDownTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -381,6 +388,7 @@
 				0AB5D8881D0EEEFF002D3A17 /* DPDConstants.swift in Sources */,
 				0AB5D88E1D0EEEFF002D3A17 /* DropDownCell.swift in Sources */,
 				0AB5D8891D0EEEFF002D3A17 /* DPDKeyboardListener.swift in Sources */,
+				091186F82C75833300DD025E /* CompanyInfo.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
